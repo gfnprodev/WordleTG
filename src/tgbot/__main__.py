@@ -24,7 +24,7 @@ async def main():
 
     db_engine, session_factory = create_session_factory(config.db.sqlalchemy_uri, config.misc.log_level)
     if config.misc.use_redis:
-        redis = Redis(host=config.redis.host, port=config.redis.port, db=5)
+        redis = Redis(host=config.redis.host, port=config.redis.port, password=config.redis.password, db=5)
         storage = RedisStorage(redis, key_builder=DefaultKeyBuilder(with_destiny=True))
     else:
         storage = MemoryStorage()

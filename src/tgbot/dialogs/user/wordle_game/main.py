@@ -1,7 +1,7 @@
 from operator import itemgetter
 
 from aiogram_dialog import Window, Dialog
-from aiogram_dialog.widgets.kbd import SwitchTo, Cancel, Select, ScrollingGroup, Back
+from aiogram_dialog.widgets.kbd import SwitchTo, Cancel, Select, ScrollingGroup, Back, Start
 from aiogram_dialog.widgets.text import Const, Format
 
 from src.tgbot.dialogs import states
@@ -15,7 +15,7 @@ main_window = Window(
         id="choose_category",
         state=states.WordleGameMenu.CHOOSE_CATEGORY
     ),
-    SwitchTo(
+    Start(
         text=Const("Угадай Героя"),
         id="guess_dota_2_hero",
         state=states.GuessHeroMenu.GAME
