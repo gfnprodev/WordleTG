@@ -21,12 +21,12 @@ async def get_user_data(dao: HolderDAO, event_from_user: User, **kwargs):
         user = await dao.user.add_user(event_from_user.id, "@" + event_from_user.username if event_from_user.username else event_from_user.first_name)
         await dao.commit()
 
-    return {"user_id": user.id, "balance": f"{user.balance} {plural_form(user.balance)}"}
+    return {"user_id": user.id, "balance": f"<code>{user.balance}</code> {plural_form(user.balance)}", "rating": user.rating}
 
 
 main_dialog = Dialog(
     Window(
-        Format("Добро пожаловать в Wordle! Для начала игры нажмите кнопку ниже.\n\nВаш баланс: {balance}"),
+        Format("Добро пожаловать в Wordle! Для начала игры нажмите кнопку ниже.\n\nВаш баланс: {balance}\nВаш рейтинг: <b>{rating} ELO</b>"),
         Start(
             text=Const("Играть"),
             id="play_game",
@@ -36,6 +36,11 @@ main_dialog = Dialog(
             text=Const("Топ пользователей"),
             id="top_users",
             state=states.Main.TOP_MONEY
+        ),
+        Start(
+            text=Const("Создать своё слово"),
+            id="create_custom_word",
+            state=states.CreateCustomWord.INPUT_WORD
         ),
         Start(
             text=Const('Админ-Меню'),

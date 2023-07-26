@@ -6,6 +6,7 @@ from environs import Env
 from src.common.config.bot import BotConfig
 from src.common.config.db import DbConfig
 from src.common.config.misc import MiscConfig
+from src.common.config.nats import NatsConfig
 from src.common.config.redis import RedisConfig
 
 
@@ -15,6 +16,7 @@ class Config:
     misc: MiscConfig
     bot: BotConfig
     redis: RedisConfig
+    nats: NatsConfig
 
     @classmethod
     def from_env(cls, env: Env | None = None) -> Self:
@@ -26,4 +28,5 @@ class Config:
             misc=MiscConfig.compose(env),
             bot=BotConfig.compose(env),
             redis=RedisConfig.compose(env),
+            nats=NatsConfig.compose(env)
         )

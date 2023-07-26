@@ -15,6 +15,7 @@ class Category(BaseModel, TimestampMixin):
     id: Mapped[int] = mapped_column(sa.INT, primary_key=True, autoincrement=True)
     name: Mapped[str] = mapped_column(sa.TEXT)
     words: Mapped[list["Word"]] = relationship(back_populates="category", uselist=True)
+    description: Mapped[str] = mapped_column(sa.TEXT)
 
     def to_dto(self, words: list["WordDTO"] | None = None) -> dto.CategoryDTO:
         if words is None:
@@ -22,6 +23,7 @@ class Category(BaseModel, TimestampMixin):
         return dto.CategoryDTO(
             id=self.id,
             name=self.name,
+            description=self.description,
             words=words
         )
 

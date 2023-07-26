@@ -13,7 +13,7 @@ class CategoryDAO(BaseDAO):
     def __init__(self, session: AsyncSession):
         super().__init__(session)
 
-    async def add_category(self, category_name: str) -> None:
+    async def add_category(self, category_name: str, description: str) -> dto.CategoryDTO:
         stmt = exists(Category).where(Category.name == category_name).select()
 
         result = await self._session.scalars(stmt)
@@ -23,9 +23,9 @@ class CategoryDAO(BaseDAO):
         if category:
             raise ValueError("Category exists.")
 
-        stmt = insert(Category).values(name=category_name)
+        stmt = insert(Category).values(name=category_name, description=description).returning(Category)
 
-        await self._session.execute(stmt)
+        return (await self._session.scalars(stmt)).first().to_dto()
 
     async def delete_category(self, category_id: int) -> None:
         stmt = delete(Category).where(Category.id == category_id)

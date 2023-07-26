@@ -37,7 +37,6 @@ class GameWidget(Keyboard, ABC):
                 button = InlineKeyboardButton(
                     text=await empty_text.render_text(data, manager),
                     callback_data=self._own_callback_data())
-                print(button)
                 row.append(button)
             kb.append(row)
         for letters_guess in check_guesses(game['word'], *game['guesses']):

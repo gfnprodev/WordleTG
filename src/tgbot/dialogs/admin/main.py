@@ -11,6 +11,11 @@ main_admin_window = Window(
         id="categories",
         state=states.CategoriesMenu.MAIN
     ),
+    Start(
+        text=Const("Рассылка"),
+        id="mailing_users",
+        state=states.MailingMenu.INPUT_MAILING_TEXT
+    ),
     Cancel(text=Const("Назад")),
     state=states.AdminMenu.MAIN
 )

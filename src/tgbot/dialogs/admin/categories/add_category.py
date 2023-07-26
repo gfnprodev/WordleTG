@@ -4,7 +4,8 @@ from aiogram_dialog.widgets.kbd import Cancel, Row, Button
 from aiogram_dialog.widgets.text import Const, Format
 
 from src.tgbot.dialogs import states
-from src.tgbot.dialogs.admin.handlers.categories.add_category import input_category_name, confirm_create_category
+from src.tgbot.dialogs.admin.handlers.categories.add_category import input_category_name, confirm_create_category, \
+    input_category_description
 
 input_category_name_window = Window(
     Const("Введите название категории: "),
@@ -13,6 +14,15 @@ input_category_name_window = Window(
     ),
     MessageInput(input_category_name),
     state=states.AddCategoryMenu.INPUT_CATEGORY_NAME,
+)
+
+input_category_description = Window(
+    Const("Введите описание категории: "),
+    Cancel(
+        text=Const("Отмена")
+    ),
+    MessageInput(input_category_description),
+    state=states.AddCategoryMenu.INPUT_CATEGORY_DESCRIPTION
 )
 
 confirm_category_create_window = Window(
@@ -33,5 +43,6 @@ confirm_category_create_window = Window(
 
 add_category_dialog = Dialog(
     input_category_name_window,
+    input_category_description,
     confirm_category_create_window
 )

@@ -7,5 +7,6 @@ class UserDTO:
     id: int
     username: str
     balance: int
+    rating: int
     created_at: datetime
     updated_at: datetime

@@ -1,5 +1,9 @@
 from typing import TYPE_CHECKING
 
+from aiogram_dialog import DialogManager
+
+from src.tgbot.dialogs.user.handlers.wordle_game import GameTD
+
 if TYPE_CHECKING:
     from src.infra.database.dao.holder import HolderDAO
 
@@ -9,9 +13,14 @@ async def get_categories_getter(dao: "HolderDAO", **kwargs):
     return {"categories": categories}
 
 
-async def get_game_active_words(dao: "HolderDAO", **kwargs):
-    game_history = [[["w", 1], ["o", 0], ["r", 2], ["d", 2], ["y", 1]],
-                    [["w", 4], ["o", 3], ["r", 3], ["d", 1], ["y", 5]],
-                    [["w", 3], ["o", 2], ["r", 3], ["d", 3], ["y", 3]]]
+async def curent_game_info_getter(dialog_manager: DialogManager, **kwargs):
+    game: GameTD = dialog_manager.dialog_data['game']
 
-    return {"row1": game_history[0]}
+    return {"word_length": len(game['word']), "not_exists_letters": ", ".join(game['nonexists_letters'])}
+
+
+async def category_description_getter(dao: "HolderDAO", dialog_manager: DialogManager, **kwargs):
+    cateogry_id: int = int(dialog_manager.dialog_data['category_id'])
+    category = await dao.category.get_category(cateogry_id)
+
+    return {"description": category.description}

@@ -16,6 +16,22 @@ services:
         condition: service_healthy
     networks:
       - apinet
+  natsmailer:
+    container_name: "natsmailer"
+    image: gfndev/wordletg:latest
+    build:
+      context: .
+    stop_signal: SIGINT
+    entrypoint: python -m src.mailing_nats
+    links:
+      - nats
+    environment:
+      NATS_HOST: nats
+    depends_on:
+      nats:
+        condition: service_started
+    networks:
+      - apinet
   tgbot:
     container_name: "tgbot"
     image: gfndev/wordletg:latest
@@ -28,9 +44,11 @@ services:
       - ".env"
     links:
       - redis
+      - nats
     environment:
       DB_HOST: database
       REDIS_HOST: redis
+      NATS_HOST: nats
     depends_on:
       database:
         condition: service_healthy
@@ -38,6 +56,8 @@ services:
         condition: service_healthy
       migrations:
         condition: service_completed_successfully
+      nats:
+        condition: service_started
     networks:
       - apinet
   database:
@@ -83,11 +103,22 @@ services:
       - redis-data:/data
     networks:
       - apinet
+  nats:
+    container_name: "natstg"
+    image: nats
+    command: "-js -c server.conf"
+    restart: always
+    networks:
+      - apinet
+    volumes:
+      - nats-data:/natsdata
+      - ./server.conf:/server.conf
 
 
 volumes:
   pg_data: {}
   redis-data: {}
+  nats-data: {}
 
 networks:
   apinet:

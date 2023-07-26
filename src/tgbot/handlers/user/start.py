@@ -12,21 +12,35 @@ logger = logging.getLogger(__name__)
 
 
 @router.message(CommandStart(deep_link=True))
-async def on_referral_start(message: types.Message, command: CommandObject, dialog_manager: DialogManager, dao: HolderDAO,
+async def on_referral_start(message: types.Message, command: CommandObject, dialog_manager: DialogManager,
+                            dao: HolderDAO,
                             bot: Bot):
     user = await dao.user.get_user(message.from_user.id)
     if not user:
-        await dao.user.add_user(message.from_user.id, "@" + message.from_user.username if message.from_user.username else message.from_user.first_name)
+        await dao.user.add_user(message.from_user.id,
+                                "@" + message.from_user.username if message.from_user.username else message.from_user.first_name)
         await dao.commit()
-    else:
-        return await dialog_manager.start(states.Main.MAIN, mode=StartMode.RESET_STACK)
     args = command.args
+    logger.info(args)
+    if "custom" in args:
+        custom_word_id = int(args.split("_")[1])
+        custom_word = await dao.custom_words.get_custom_word_by_id(custom_word_id)
+        logger.info(custom_word)
+        if not custom_word:
+            return await dialog_manager.start(states.Main.MAIN, mode=StartMode.RESET_STACK)
+        return await dialog_manager.start(states.CustomWordleGaming.GAME,
+                                          data={"word": custom_word.word, "round": 1, "guesses": [], "win": False,
+                                                "word_id": custom_word.id,
+                                                "nonexists_letters": []})
+
     try:
         args = args.split("_")
         inviter = int(args[1])
         word_id = int(args[0])
     except Exception as e:
         logger.exception(e)
+        return await dialog_manager.start(states.Main.MAIN, mode=StartMode.RESET_STACK)
+    if inviter == user.id:
         return await dialog_manager.start(states.Main.MAIN, mode=StartMode.RESET_STACK)
     word = await dao.word.get_word_by_word_id(word_id)
     await dao.user.add_user_balance(inviter, 50)
@@ -36,8 +50,9 @@ async def on_referral_start(message: types.Message, command: CommandObject, dial
         logger.exception(e)
     if not word:
         return await dialog_manager.start(states.Main.MAIN, mode=StartMode.RESET_STACK)
-    await dialog_manager.start(states.WordleGaming.GAME, data={"word": word.word, "round": 1, "guesses": [], "win": False,
-                                                               "word_id": word_id})
+    await dialog_manager.start(states.WordleGaming.GAME,
+                               data={"word": word.word, "round": 1, "guesses": [], "win": False,
+                                     "word_id": word_id})
 
 
 @router.message(CommandStart())

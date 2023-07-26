@@ -54,3 +54,8 @@ class UserDAO(BaseDAO):
         stmt = update(User).where(User.id == user_id).values(balance=User.balance + amount)
 
         await self._session.execute(stmt)
+
+    async def edit_user_rating(self, user_id: int, rating: int) -> None:
+        stmt = update(User).where(User.id == user_id).values(rating=User.rating + rating)
+
+        await self._session.execute(stmt)

@@ -45,3 +45,8 @@ class WordDAO(BaseDAO):
             return None
 
         return word.to_dto()
+
+    async def delete_words_by_category_id(self, category_id: int) -> None:
+        stmt = delete(Word).where(Word.category_id == category_id)
+
+        await self._session.execute(stmt)

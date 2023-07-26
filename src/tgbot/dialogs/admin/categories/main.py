@@ -7,7 +7,7 @@ from aiogram_dialog.widgets.text import Const, Format, Jinja
 from src.tgbot.dialogs import states
 from src.tgbot.dialogs.admin.categories.getters import categories_getter, category_info_getter
 from src.tgbot.dialogs.admin.handlers.categories.category_menu import on_click_category, on_delete_category
-from src.tgbot.dialogs.admin.handlers.categories.words.add_words import on_start_add_words
+from src.tgbot.dialogs.admin.handlers.categories.words.add_words import on_start_add_words, on_delete_words_in_category
 
 main_categories_menu = Window(
     Const("Categories Menu"),
@@ -43,6 +43,11 @@ main_category_menu = Window(
         text=Const("Удалить"),
         id="delete_category",
         on_click=on_delete_category,
+    ),
+    Button(
+        text=Const("Удалить слова"),
+        id="delete_words_in_category",
+        on_click=on_delete_words_in_category
     ),
     Button(
         text=Const("➕ Добавить слова"),

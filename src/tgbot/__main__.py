@@ -13,6 +13,7 @@ from src.common.misc.utils import create_session_factory
 from src.tgbot.dialogs import register_dialogs
 from src.tgbot.handlers import register_events
 from src.tgbot.misc.helpers import get_bot_instance
+from src.tgbot.utilities.mailing.nats_mailing import NatsMailing
 
 log = logging.getLogger(__name__)
 
@@ -24,7 +25,10 @@ async def main():
 
     db_engine, session_factory = create_session_factory(config.db.sqlalchemy_uri, config.misc.log_level)
     if config.misc.use_redis:
-        redis = Redis(host=config.redis.host, port=config.redis.port, password=config.redis.password, db=5)
+        if config.redis.password:
+            redis = Redis(host=config.redis.host, port=config.redis.port, password=config.redis.password, db=5)
+        else:
+            redis = Redis(host=config.redis.host, port=config.redis.port, db=5)
         storage = RedisStorage(redis, key_builder=DefaultKeyBuilder(with_destiny=True))
     else:
         storage = MemoryStorage()

@@ -9,4 +9,5 @@ if TYPE_CHECKING:
 class CategoryDTO:
     id: int
     name: str
+    description: str
     words: list["WordDTO"] = field(default_factory=list)
