@@ -33,18 +33,16 @@ class CategoryDAO(BaseDAO):
         await self._session.execute(stmt)
 
     async def get_category(self, category_id: int) -> dto.CategoryDTO | None:
-        stmt = select(Category).where(Category.id == category_id).options(
-            joinedload(Category.words)
-        )
+        stmt = select(Category).where(Category.id == category_id)
 
         result = await self._session.scalars(stmt)
 
-        category: Category = result.unique().first()
+        category: Category = result.first()
 
         if not category:
             return None
 
-        return category.to_dto_words_prefetched()
+        return category.to_dto()
 
     async def get_all_category(self) -> list[dto.CategoryDTO]:
         stmt = select(Category).options(
@@ -56,3 +54,12 @@ class CategoryDAO(BaseDAO):
         categories: Sequence[Category] = result.unique().all()
 
         return [category.to_dto_words_prefetched() for category in categories]
+
+    async def get_all_category_exclude_words(self) -> list[dto.CategoryDTO]:
+        stmt = select(Category)
+
+        result = await self._session.scalars(stmt)
+
+        categories: Sequence[Category] = result.all()
+
+        return [category.to_dto() for category in categories]

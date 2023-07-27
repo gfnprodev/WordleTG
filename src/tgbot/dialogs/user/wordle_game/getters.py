@@ -9,7 +9,7 @@ if TYPE_CHECKING:
 
 
 async def get_categories_getter(dao: "HolderDAO", **kwargs):
-    categories = await dao.category.get_all_category()
+    categories = await dao.category.get_all_category_exclude_words()
     return {"categories": categories}
 
 
