@@ -9,8 +9,6 @@
     <a href="https://github.com/gfnprodev/WordleTG"><strong>Explore the docs »</strong></a>
     <br/>
     <br/>
-    <a href="https://t.me/WordleDotaBot">View Demo</a>
-    .
     <a href="https://github.com/gfnprodev/WordleTG/issues">Report Bug</a>
     .
     <a href="https://github.com/gfnprodev/WordleTG/issues">Request Feature</a>
